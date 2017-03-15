@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Base Morillas - Landing</title>
+	<meta charset="UTF-8">
+	<style type="text/css">
+
+    </style>
+	<link rel="stylesheet" href="assets/css/style.css" />
+    <script src="http://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+</head>
+<body>
+	<div class="controls">
+		<a id="prev_slide" onclick="s1.prev_slide()">UP</a>
+		<a id="next_slide" onclick="s1.next_slide()">DOWN</a>
+        <nav id="time_line_menu"></nav>
+	</div>
+	<div id="slot_machine"></div>
+	<script type="text/javascript">
+		function SlotMachine(selector,config,sections_data,curr_position = 0){
+			this.selector = selector;
+			this.config = config;
+			this.sections_data = sections_data;
+			this.curr_position = curr_position;
+		}
+
+		SlotMachine.prototype.init = function(){
+			var el = document.querySelector(this.selector);
+			el.style.width = this.config.width;
+			el.style.height = this.config.height;
+
+			Object.keys(sections_data).forEach(function(key) {
+		    	var n_el = document.createElement('div');
+		    	n_el.setAttribute("id", sections_data[key].id);
+                n_el.setAttribute("class", 'box');
+				n_el.style.backgroundColor = sections_data[key].bkgColor;
+		    	var node = document.createTextNode(sections_data[key].title);
+				n_el.appendChild(node);
+				el.appendChild(n_el);
+				var id_el = sections_data[key].id;
+
+				if(sections_data[key].timeLine){
+					var parent_el = document.getElementById(id_el);
+                    parent_el.innerText = "";
+                    var time_line_menu = document.createElement('div');
+                    time_line_menu.setAttribute('id','time_line_menu');
+
+                    var time_line_wrapper = document.createElement('div');
+                    time_line_wrapper.setAttribute('id','time_line_wrapper');
+
+                    //document.getElementById(id_el).appendChild(time_line_menu);
+                    document.getElementById(id_el).appendChild(time_line_wrapper);
+
+                    Object.keys(timeline_data).forEach(function (key) {
+                        var t_el = document.createElement('span');
+                        var t = document.createTextNode('Element: ' + timeline_data[key].year);
+                        t_el.appendChild(t);
+                        t_el.setAttribute("id", 'y_' + timeline_data[key].year);
+                        t_el.setAttribute("class", "timeline_item");
+                        t_el.style.width = timeline_data[key].width;
+                        time_line_wrapper.appendChild(t_el);
+
+                        //create menu
+
+                    });
+				}
+			});
+		};
+
+		SlotMachine.prototype.prev_slide = function(){
+			if(this.curr_position > 1){
+				this.curr_position = this.curr_position - 1;			
+			}else{
+				this.curr_position = this.data.length;
+			}			
+		};
+
+		SlotMachine.prototype.next_slide = function(){
+			if(number_data_elements > this.curr_position){
+				this.curr_position = this.curr_position + 1;			
+			}else{
+				this.curr_position = 1;
+			}
+		};
+
+		function TimeLine(selector,config,data,curr_position){
+			this.selector = selector;
+			this.config = config;
+			this.data = data;
+			this.curr_position = curr_position;
+		}
+
+		TimeLine.prototype.init = function(){
+			var el = document.querySelector(this.selector);
+			el.style.width = this.config.width;
+			el.style.height = this.config.height;
+		};
+
+		var sections_data = [
+			{
+			    id: 'home',
+				title : 'Item1',
+				section : 'Home',
+				bkgColor : 'orange',
+				timeLine : {
+					enable : true, 
+					id : '#time_line'
+				}
+			},
+			{
+                id: 'about',
+                title : 'Item2',
+				section : 'About',
+				bkgColor : 'cyan'
+			},
+			{
+                id: 'projects',
+                title : 'Item3',
+				section :'Projects'
+			},
+			{
+                id: 'team',
+                title : 'Item4',
+				section : 'Team',
+				bkgColor : 'purple'
+			},
+			{
+                id: 'contact',
+                title : 'Item5',
+				section : 'Contact',
+				bkgColor : 'gray'
+			}
+		];
+
+		var timeline_data = [
+			{
+				year : 1962,
+				content : 'Big Bang',
+                width : '30%'
+			},
+			{
+				year : 1963,
+				content : 'Firsts Adventures\'',
+                width : '20%'
+			},
+			{
+				year : 1964,
+				content : 'Consolidation',
+                width : '35%'
+			},
+			{
+				year : 1965,
+				content : 'First Big Account',
+                width : '20%'
+			},
+			{
+                year: 1966,
+                content: 'Start\'s the first game',
+                width : '10%'
+            },
+            {
+                year : 1967,
+                content : 'The Big Project',
+                width : '10%'
+            },
+            {
+                year : 1968,
+                content : 'Previous Moon',
+                width : '15%'
+            },
+            {
+                year : 1969,
+                content : 'Moon',
+                width : '15%'
+            },
+            {
+                year : 1970,
+                content : 'First 70',
+                width : '15%'
+            },
+            {
+                year : 1971,
+                content : 'Final',
+                width : '15%'
+            }
+        ];
+
+
+		$(document).ready(function() {
+            s1 = new SlotMachine(
+                '#slot_machine',
+                {
+                    height: '100vh',
+                    width: '100%',
+                    bullets: true
+                },
+                sections_data,
+                1
+            );
+
+            t1 = new TimeLine(
+                '#time_line'
+            );
+
+            s1.init();
+
+            $('body').on('keydown', function (e) {
+                if (e.keyCode === 38 || e.keyCode === 40) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            $('#prev_slide').on('click', function () {
+                //console.log('up');
+                var element_move = $('.box:last');
+                $('#slot_machine').animate({
+                    marginTop: "-100vh"
+                }, 0, function () {
+                    $('#slot_machine').animate({
+                            marginTop: "0"
+                        }, 500
+                    )
+                });
+                $('.box:first').before(element_move);
+            });
+
+            $('#next_slide').on('click', function () {
+                $('#slot_machine').animate({
+                    marginTop: "-100vh"
+                }, 500, function () {
+                    $('.box:last').after($('.box:first'));
+                    $('#slot_machine').css('margin-top', '0px');
+                });
+            });
+
+            $('#home').width($('.timeline_item').width() * $('.timeline_item').length);
+
+            function isInViewport(element){
+                if(element.offsetTop<window.innerHeight &&
+                    element.offsetTop>-element.offsetHeight
+                    && element.offsetLeft>-element.offsetWidth
+                    && element.offsetLeft<window.innerWidth){
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            function displaywheel(e) {
+                var evt = window.event || e //equalize event object
+
+                var delta = evt.detail ? evt.detail * (-120) : evt.wheelDelta //check for detail first so Opera uses that instead of wheelDelta
+
+                if(delta == 360){
+                    $('#time_line_wrapper').css('margin-left', function (index, curValue) {
+                        var mov = parseInt(curValue, 10) + 100;
+                        if( mov < 0){
+                            console.log(isInViewport(document.getElementById("y_1970"))?"Yes":"No");
+                            var el = $("#y_1970");
+                            if(isInViewport(document.getElementById("y_1970"))){
+                                el.css('background-color','red');
+                            }else{
+                                el.css('background-color','transparent');
+                            }
+                            return mov + 'px';
+                        }
+                        return '0px';
+                    });
+                }else{
+                    $('#time_line_wrapper').css('margin-left', function (index, curValue) {
+                        var mov = parseInt(curValue, 10) - 100;
+                        var limit = $(this).width() - $(window).width();
+                        if( Math.abs(mov) < limit ){
+                            console.log(isInViewport(document.getElementById("y_1970"))?"Yes":"No");
+                            var el = $("#y_1970");
+                            if(isInViewport(document.getElementById("y_1970"))){
+                                el.css('background-color','red');
+                            }else{
+                                el.css('background-color','transparent');
+                            }
+                            return mov + 'px';
+                        }
+						return -limit+'px';
+                    });
+				}
+            }
+
+            var mousewheelevt = (/Firefox/i.test(navigator.userAgent)) ? "DOMMouseScroll" : "mousewheel" //FF doesn't recognize mousewheel as of FF3.x
+
+            if (document.attachEvent) { //if IE (and Opera depending on user setting)
+                document.attachEvent("on" + mousewheelevt, displaywheel);
+            }else if (document.addEventListener){ //WC3 browsers
+                document.addEventListener(mousewheelevt, displaywheel, false);
+        	}
+
+        	//console.log(timeline_data.length);
+        	for(var i=0; i<timeline_data.length; i++){
+                //console.log(timeline_data[i].year);
+            }
+        });
+	</script>
+</body>
+</html>
