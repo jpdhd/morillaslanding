@@ -12,82 +12,27 @@ body {
   overflow: hidden;
   position: relative; }
 
-.controls {
-  position: absolute;
-  left: 0;
-  right: 0;
+.slot_section {
   height: 100vh;
-  margin: auto;
-  z-index: 999;
-  text-align: center; }
-  .controls a {
-    border: 1px solid white;
-    padding: 10px;
+  width: 100%;
+  background-color: beige; }
+
+.slot_machine_ctrl {
+  position: absolute;
+  z-index: 999; }
+  .slot_machine_ctrl a {
+    display: inline-block;
     margin: 10px;
-    cursor: pointer;
-    color: white;
-    width: 100px;
-    text-align: center;
-    background-color: darkolivegreen; }
-    .controls a:hover {
-      border: 1px solid black;
-      padding: 10px;
-      margin: 10px;
+    padding: 10px;
+    border: 1px solid brown;
+    color: brown;
+    transition: color, background-Color 200ms ease-in-out; }
+    .slot_machine_ctrl a:hover {
       cursor: pointer;
-      color: black;
-      background-color: white; }
-    .controls a#prev_slide {
-      top: 10px;
-      position: absolute; }
-    .controls a#next_slide {
-      bottom: 10px;
-      position: absolute; }
+      background-color: burlywood;
+      color: white; }
 
-#slot_machine {
-  background-color: yellow;
-  height: 100vh;
-  width: 100%;
+#slot_machine_wrapper {
   position: absolute; }
-
-.box {
-  height: 100vh;
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  background-color: blue; }
-
-#home {
-  position: relative; }
-  #home #time_line_wrapper {
-    height: 100vh;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    overflow: hidden;
-    flex-wrap: nowrap;
-    align-items: stretch;
-    justify-content: stretch; }
-
-.timeline_item {
-  transition: background-color 500ms ease-in-out;
-  border: 1px solid black;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  flex-direction: row; }
-
-#time_line_menu {
-  width: 50vw;
-  background-color: antiquewhite;
-  height: 3px;
-  position: absolute;
-  bottom: 10vh;
-  left: 0;
-  right: 0;
-  margin: auto; }
 
 /*# sourceMappingURL=style.css.map */
