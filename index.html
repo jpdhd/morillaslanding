@@ -5,6 +5,7 @@
 	<meta charset="UTF-8">
 	<style type="text/css">
 
+
     </style>
 	<link rel="stylesheet" href="assets/css/reset.css" />
 	<link rel="stylesheet" href="assets/css/style.css" />
@@ -123,232 +124,44 @@
         this.renderUpdate();
     };
 
-  	//SLOT MACHINE
-    function SlotMachine(selector,config,curr_position = 0){
-        this.selector = selector;
-        this.config = config;
-        this.curr_position = curr_position;
-    };
+    let time_line_intance = new TimeLine();
 
-    function setTextButtonControls(){
-        let sections = document.querySelectorAll('.slot_section');
-        document.getElementById('prev_slide').innerHTML = sections[sections.length-1].id;
-        document.getElementById('next_slide').innerHTML = sections[1].id;
-	};
+    function TimeLineVertical(){
+        TimeLine.call(this, TimeLine);
+        this._name = 'Vertical';
+    }
 
-    SlotMachine.prototype.create_controls = function () {
-		if(this.config.enableControls == true){
-		    let controls = document.createElement('div');
-            controls.setAttribute('id', 'slot_machine_ctrl');
-            controls.setAttribute('class', 'slot_machine_ctrl');
+    TimeLineVertical.prototype = time_line_intance;
 
-            let right_button = document.createElement('a');
-            right_button.setAttribute('id', 'prev_slide');
+    function TimeLineHoritzontal(){
+        TimeLine.call(this, TimeLine);
+        this._name = 'Horitzontal';
+    }
 
-            right_button.addEventListener('click', this.prev_slide.bind(this));
-
-            document.getElementById(this.selector).appendChild(controls);
-            let left_button = document.createElement('a');
-            left_button.setAttribute('id', 'next_slide');
-
-            left_button.addEventListener('click', this.next_slide.bind(this));
-
-            left_button.innerHTML = this.config.controls.next_button;
-
-            right_button.innerHTML = this.config.controls.prev_button;
-
-            document.getElementById('slot_machine_ctrl').appendChild(right_button);
-            document.getElementById('slot_machine_ctrl').appendChild(left_button);
-		}
-    };
-
-    SlotMachine.prototype.create_wrapper = function(){
-        let slot_machine= document.createElement('div');
-        slot_machine.setAttribute('id', this.selector);
-        slot_machine.setAttribute('class', this.selector);
-        slot_machine.style.width = this.config.width;
-        slot_machine.style.height = this.config.height;
-        document.body.appendChild(slot_machine);
-	};
-
-	SlotMachine.prototype.insert_data = function(data){
-		this.data = data;
-	};
-
-    SlotMachine.prototype.render_page = function (){
-        if(this.config.orientation == 'vertical'){
-            let slot_machine_wrapper = document.createElement('div');
-            slot_machine_wrapper.setAttribute('id', this.selector+'_wrapper');
-            slot_machine_wrapper.setAttribute('class', this.selector+'_wrapper');
-            slot_machine_wrapper.style.width = this.config.width;
-            slot_machine_wrapper.style.height = this.config.height;
-            document.getElementById(this.selector).appendChild(slot_machine_wrapper);
-        }
-    };
-
-    SlotMachine.prototype.elements_to_display = function () {
-        //eliminamos los hijos del wrapper del slider vertical
-        node = document.getElementById(this.selector +'_wrapper');
-        while (node.hasChildNodes()) {
-            node.removeChild(node.lastChild);
-        }
-
-		//obtenemos el anterior elemento y posterior del curr_position
-        prev_element = ((this.curr_position + this.data.length) - 1) % this.data.length;
-        next_element = (this.curr_position + 1) % this.data.length;
-        render_elements = [prev_element,this.curr_position, next_element];
-
-        //recorremos los elementos al array assignado
-        for(let i = 0; i<render_elements.length; i++){
-            let section_el = document.createElement('div');
-            section_el.setAttribute("id", this.data[render_elements[i]].id);
-            section_el.setAttribute("class", 'slot_section');
-            section_el.className += ' ' + this.data[render_elements[i]].classes;
-            section_el.setAttribute("data", "slot_"+(render_elements[i]+1));
-            section_el.style.backgroundColor = this.data[render_elements[i]].bkgColor;
-            section_el.innerHTML = this.data[render_elements[i]].content;
-            document.getElementById(this.selector+'_wrapper').appendChild(section_el);
-        }
-        console.log('render_elements: ', render_elements);
-    };
-
-    SlotMachine.prototype.prev_slide = function(){
-        this.curr_position = ((this.curr_position + this.data.length) - 1) % this.data.length;
-
-        $('.slot_section:first').before($('.slot_section:last'));
-        $('#slot_machine_wrapper').css('marginTop', "-100vh");
-        $('#slot_machine_wrapper').animate({
-                marginTop: "0"
-            }, 500
-        );
-
-        this.elements_to_display();
-        setTextButtonControls();
-    };
-
-    SlotMachine.prototype.next_slide = function(){
-        this.curr_position = (this.curr_position + 1) % this.data.length;
-
-        $('#slot_machine_wrapper').animate({
-            marginTop: "-100vh"
-        }, 500, function () {
-            $('.slot_section:last').after($('.slot_section:first'));
-            $('#slot_machine_wrapper').css('margin-top', '0px');
-
-        });
-        this.elements_to_display();
-        setTextButtonControls();
-    };
+    TimeLineHoritzontal.prototype = time_line_intance;
 
     //DATA SLOT MACHINE
     $().ready(function () {
 
-        $('body').on('keydown', function (e) {
-            if (e.keyCode === 37 || e.keyCode === 38 || e.keyCode === 39 || e.keyCode === 40) {
-                e.preventDefault();
-                return false;
-            }
-        });
+		x1 = new TimeLineVertical();
 
-        s1 = new SlotMachine (
-            'slot_machine',
-            {
-                height: '100vh',
-                width: '100%',
-                enableBullets: true,
-				orientation: 'vertical',
-				bullets : {
-                  	type : 'dots'
-				},
-				enableControls: true,
-				controls : {
-             	   	next_button: 'siguiente',
-            		prev_button: 'anterior'
-        		}
-            },
-            0
-        );
-
-        s1.create_wrapper();
-
-        s1.create_controls();
-
-        s1.insert_data(
-            [
-                {
-                    id: 'time_line',
-                    title : 'Time Line Section',
-                    section : 'Time Line',
-                    bkgColor : '#f2f2f2',
-                    content : '<h1>TIME LINE MORILLAS & MORE<h1>',
-                    classes : 'animation'
-                },
-                {
-                    id: 'home',
-                    title : 'Home Section',
-                    section : 'Home',
-                    bkgColor : 'orange',
-					content : '<h1>MORILLAS & MORE<h1>',
-					classes : 'init_message pulse'
-                },
-                {
-                    id: 'about',
-                    title : 'About Section',
-                    section : 'About',
-                    bkgColor : 'cyan',
-                    content : '<h1>HOLA ABOUT<h1>',
-                },
-                {
-                    id: 'projects',
-                    title : 'Projects Section',
-                    section : 'Projects',
-					bkgColor : 'yellow',
-                    content : '<h1>HOLA PROJECTS<h1>',
-                },
-                {
-                    id: 'team',
-                    title : 'Item4',
-                    section : 'Team',
-                    bkgColor : 'purple',
-                    content : '<h1>HOLA TEAM<h1>',
-                },
-                {
-                    id: 'contact',
-                    title : 'Item5',
-                    section : 'Contact',
-                    bkgColor : 'gray',
-                    content : '<h1>HOLA CONTACT<h1>',
-                }
-            ]
-		);
-
-        s1.render_page();
-
-        s1.elements_to_display();
-
-        console.log('current position: ',s1.curr_position);
-
-        setTextButtonControls();
-
-
-
-		x1 = new TimeLine();
-
-//		$('#time_line').append(x1.render());
 		x1.addEvent(new EventTimeLine(new TimeInterval(1951, 1979), 'PATATA'));
         x1.addEvent(new EventTimeLine(new TimeInterval(1941, 1979), 'PESOL'));
         x1.addEvent(new EventTimeLine(new TimeInterval(1911, 1979), 'PASTANAGA'));
         x1.addEvent(new EventTimeLine(new TimeInterval(1921, 1979), 'MONGETA'));
         x1.setInterval(new TimeInterval(1931, 1979));
 
-        x2 = new TimeLine();
+        x2 = new TimeLineVertical();
 
-        $('#time_line').append(x2.render());
+        $('body').append(x2.render());
         x2.addEvent(new EventTimeLine(new TimeInterval(1951, 1979), 'PATATA'));
         x2.addEvent(x1);
         x2.addEvent(new EventTimeLine(new TimeInterval(1911, 1979), 'PASTANAGA'));
         x2.addEvent(new EventTimeLine(new TimeInterval(1921, 1979), 'MONGETA'));
 
+        //console.log(x1.constructor.name);
+
     });
+
 </script>
 </html>
