@@ -19,7 +19,19 @@ body{
   height: 100vh;
   width: 100%;
   background-color: beige;
+  display: flex;
+  justify-content: center;
+  align-items:center;
+  flex-wrap: wrap;
+  position: absolute;
+  &:first-child{
+    top: -100vh;
+  }
+  &:last-child{
+    top: 100vh;
+  }
 }
+
 
 .slot_machine_ctrl{
   position: absolute;
@@ -43,6 +55,28 @@ body{
   position: absolute;
 }
 
+/*
+@keyframes pulse_animation {
+  0% { transform: scale(1); }
+  30% { transform: scale(1); }
+  40% { transform: scale(1.10); }
+  50% { transform: scale(1); }
+  60% { transform: scale(1); }
+  70% { transform: scale(1.04); }
+  80% { transform: scale(1); }
+  100% { transform: scale(1); }
+}
 
+#home{
+  font-family: Arial;
+  font-size: 2em;
+}
 
-
+.pulse {
+  animation-name: pulse_animation;
+  animation-duration: 3500ms;
+  transform-origin:50% 50%;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+*/

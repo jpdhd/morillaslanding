@@ -23,20 +23,12 @@
 
     function setTextButtonControls(){
         let sections = document.querySelectorAll('.slot_section');
-        console.log(typeof(sections));
-        console.log('last element', sections[sections.length-1].id);
-        console.log('next element', sections[1].id);
         document.getElementById('prev_slide').innerHTML = sections[sections.length-1].id;
         document.getElementById('next_slide').innerHTML = sections[1].id;
 	};
 
     SlotMachine.prototype.create_controls = function () {
-		if(this.config.enablebullets == true){
-		    console.log('creamos los bullets del slot machine en el lateral', this.config.bullets);
-		}
-
 		if(this.config.enableControls == true){
-		    console.log('Tenemos controles',this.config.enableControls);
 		    let controls = document.createElement('div');
             controls.setAttribute('id', 'slot_machine_ctrl');
             controls.setAttribute('class', 'slot_machine_ctrl');
@@ -72,7 +64,6 @@
 
 	SlotMachine.prototype.insert_data = function(data){
 		this.data = data;
-		console.log(data);
 	};
 
     SlotMachine.prototype.render_page = function (){
@@ -83,26 +74,37 @@
             slot_machine_wrapper.style.width = this.config.width;
             slot_machine_wrapper.style.height = this.config.height;
             document.getElementById(this.selector).appendChild(slot_machine_wrapper);
-
-            //make display only 3 items other only in object
-            for(let i = 0; i<this.data.length; i++){
-                let section_el = document.createElement('div');
-                section_el.setAttribute("id", this.data[i].id);
-                section_el.setAttribute("class", 'slot_section');
-                section_el.setAttribute("data", "slot_"+(i+1));
-                section_el.style.backgroundColor = this.data[i].bkgColor;
-                document.getElementById(this.selector+'_wrapper').appendChild(section_el);
-            }
         }
     };
 
-    SlotMachine.prototype.prev_slide = function(){
-        console.log('current slide', this.curr_position);
-        if(this.curr_position > 1){
-            this.curr_position = this.curr_position - 1;
-        }else {
-            this.curr_position = this.data.length;
+    SlotMachine.prototype.elements_to_display = function () {
+        //eliminamos los hijos del wrapper del slider vertical
+        node = document.getElementById(this.selector +'_wrapper');
+        while (node.hasChildNodes()) {
+            node.removeChild(node.lastChild);
         }
+
+		//obtenemos el anterior elemento y posterior del curr_position
+        prev_element = ((this.curr_position + this.data.length) - 1) % this.data.length;
+        next_element = (this.curr_position + 1) % this.data.length;
+        render_elements = [prev_element,this.curr_position, next_element];
+
+        //recorremos los elementos al array assignado
+        for(let i = 0; i<render_elements.length; i++){
+            let section_el = document.createElement('div');
+            section_el.setAttribute("id", this.data[render_elements[i]].id);
+            section_el.setAttribute("class", 'slot_section');
+            section_el.className += ' ' + this.data[render_elements[i]].classes;
+            section_el.setAttribute("data", "slot_"+(render_elements[i]+1));
+            section_el.style.backgroundColor = this.data[render_elements[i]].bkgColor;
+            section_el.innerHTML = this.data[render_elements[i]].content;
+            document.getElementById(this.selector+'_wrapper').appendChild(section_el);
+        }
+        console.log('render_elements: ', render_elements);
+    };
+
+    SlotMachine.prototype.prev_slide = function(){
+        this.curr_position = ((this.curr_position + this.data.length) - 1) % this.data.length;
 
         $('.slot_section:first').before($('.slot_section:last'));
         $('#slot_machine_wrapper').css('marginTop', "-100vh");
@@ -110,28 +112,28 @@
                 marginTop: "0"
             }, 500
         );
+
+        this.elements_to_display();
         setTextButtonControls();
     };
 
     SlotMachine.prototype.next_slide = function(){
-        console.log('current slide', this.curr_position);
-        if(this.data.length > this.curr_position){
-            this.curr_position = this.curr_position + 1;
-        }else{
-            this.curr_position = 1;
-        }
+        this.curr_position = (this.curr_position + 1) % this.data.length;
+
         $('#slot_machine_wrapper').animate({
             marginTop: "-100vh"
         }, 500, function () {
             $('.slot_section:last').after($('.slot_section:first'));
             $('#slot_machine_wrapper').css('margin-top', '0px');
+
         });
+        this.elements_to_display();
         setTextButtonControls();
     };
 
     //DATA SLOT MACHINE
     $().ready(function () {
-        //disable cursors keys
+
         $('body').on('keydown', function (e) {
             if (e.keyCode === 37 || e.keyCode === 38 || e.keyCode === 39 || e.keyCode === 40) {
                 e.preventDefault();
@@ -139,7 +141,6 @@
             }
         });
 
-        //instance slot machine object
         s1 = new SlotMachine (
             'slot_machine',
             {
@@ -156,7 +157,7 @@
             		prev_button: 'anterior'
         		}
             },
-            1
+            0
         );
 
         s1.create_wrapper();
@@ -166,46 +167,60 @@
         s1.insert_data(
             [
                 {
+                    id: 'time_line',
+                    title : 'Time Line Section',
+                    section : 'Time Line',
+                    bkgColor : '#f2f2f2',
+                    content : '<h1>TIME LINE MORILLAS & MORE<h1>',
+                    classes : 'animation'
+                },
+                {
                     id: 'home',
                     title : 'Home Section',
                     section : 'Home',
-                    bkgColor : 'orange'
+                    bkgColor : 'orange',
+					content : '<h1>MORILLAS & MORE<h1>',
+					classes : 'init_message pulse'
                 },
                 {
                     id: 'about',
                     title : 'About Section',
                     section : 'About',
-                    bkgColor : 'cyan'
+                    bkgColor : 'cyan',
+                    content : '<h1>HOLA ABOUT<h1>',
                 },
                 {
                     id: 'projects',
                     title : 'Projects Section',
                     section : 'Projects',
-					bkgColor : 'yellow'
+					bkgColor : 'yellow',
+                    content : '<h1>HOLA PROJECTS<h1>',
                 },
-				/*
                 {
                     id: 'team',
                     title : 'Item4',
                     section : 'Team',
-                    bkgColor : 'purple'
+                    bkgColor : 'purple',
+                    content : '<h1>HOLA TEAM<h1>',
                 },
                 {
                     id: 'contact',
                     title : 'Item5',
                     section : 'Contact',
-                    bkgColor : 'gray'
-                }*/
+                    bkgColor : 'gray',
+                    content : '<h1>HOLA CONTACT<h1>',
+                }
             ]
 		);
 
         s1.render_page();
 
+        s1.elements_to_display();
+
+        console.log('current position: ',s1.curr_position);
+
         setTextButtonControls();
 
-        // remains solve push elements to a data with a insert_data method dinamic
-		// make call in function instance object
-		//
     });
 </script>
 </html>
