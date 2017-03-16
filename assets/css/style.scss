@@ -1,61 +1,64 @@
-*{
-  padding:0;
+* {
+  padding: 0;
   margin: 0;
 }
 
-html{
-  min-width: 100%;
-  min-height: 100vh;
-}
-
-body{
-  min-width: 100%;
-  min-height: 100vh;
-  overflow: hidden;
-  position: relative;
-}
-
-.slot_section{
+html {
   height: 100vh;
   width: 100%;
-  background-color: beige;
-  display: flex;
-  justify-content: center;
-  align-items:center;
-  flex-wrap: wrap;
-  position: absolute;
-  &:first-child{
-    top: -100vh;
-  }
-  &:last-child{
-    top: 100vh;
-  }
+  background-color: burlywood;
+  overflow: hidden;
 }
 
-
-.slot_machine_ctrl{
+.time_line_wrapper {
   position: absolute;
-  z-index:999;
-  a{
+  height: 100%;
+  width: 100%;
+  .btn {
+    position: fixed;
     display: inline-block;
-    margin: 10px;
-    padding:10px;
-    border: 1px solid brown;
-    color: brown;
-    transition: color, background-Color 200ms ease-in-out;
-    &:hover{
-      cursor: pointer;
-      background-color: burlywood;
-      color: white;
+    z-index: 10000;
+    text-transform: uppercase;
+    &.horizontal{
+      position: absolute;
+    }
+  }
+  > div {
+    height: 100vh;
+    background-color: beige;
+  }
+  &.vertical {
+    top: -100vh;
+    .btn_prev.vertical {
+      top: 10px;
+      left: 50%;
+    }
+    .btn_next.vertical {
+      top: 95vh;
+      left: 50%;
+    }
+  }
+  &.horizontal {
+    left: 0;
+    top: 0;
+    .btn_prev.horizontal {
+      top: 0;
+      bottom: 0;
+      //left: 105vw;
+      height: 30px;
+      margin: auto;
+      max-width: 100px;
+    }
+    .btn_next.horizontal {
+      top: 0;
+      bottom: 0;
+      //right: -105vw;
+      margin: auto;
+      height: 30px;
+      max-width: 100px;
     }
   }
 }
-
-#slot_machine_wrapper{
-  position: absolute;
-}
-
-
 
 /*
 @keyframes pulse_animation {

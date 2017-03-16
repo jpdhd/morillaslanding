@@ -41,7 +41,7 @@
     //EVENT-TIMELINE
     function EventTimeLine(interval, content){
         this._interval = interval;
-    	this._$element = $('<div id="'+interval.toString()+'" class="event_time_line">'+content+'</div>');
+    	this._$element = $('<div id="'+interval.toString()+'" class="time_line_event">'+content+'</div>');
     };
 
 	EventTimeLine.prototype.getInterval = function () {
@@ -62,8 +62,8 @@
     	this._current = null;
     	this._interval = null;
         this._$wrapper = $("<div class='time_line_wrapper'></div>");
-        this._$wrapper.append($("<a class='btn btn_prev'>prev</a>").on('click', this.goPrev.bind(this)));
-        this._$wrapper.append($("<a class='btn btn_next'>next</a>").on('click', this.goNext.bind(this)));
+        this._$wrapper.append(this._$btn_prev = $("<a class='btn btn_prev'>prev</a>").on('click', this.goPrev.bind(this)));
+        this._$wrapper.append(this._$btn_next = $("<a class='btn btn_next'>next</a>").on('click', this.goNext.bind(this)));
     };
 
     TimeLine.prototype.render = function(){
@@ -124,40 +124,83 @@
         this.renderUpdate();
     };
 
-    let time_line_intance = new TimeLine();
-
     function TimeLineVertical(){
-        TimeLine.call(this, TimeLine);
-        this._name = 'Vertical';
+        TimeLine.call(this);
+        this._$btn_next.addClass('vertical');
+        this._$btn_prev.addClass('vertical');
+        this._$wrapper.addClass('vertical');
     }
 
-    TimeLineVertical.prototype = time_line_intance;
+    TimeLineVertical.prototype = new TimeLine();
 
-    function TimeLineHoritzontal(){
-        TimeLine.call(this, TimeLine);
-        this._name = 'Horitzontal';
+    TimeLineVertical.prototype.goPrev = function () {
+        TimeLine.prototype.goPrev.call(this);
+/*
+ 		this._$wrapper.animate({
+		    top: 0
+		}, 500, (function () {
+            TimeLine.prototype.goPrev.call(this);
+            this._$wrapper.css('top', '-100vh');
+        }).bind(this));*/
+    };
+
+    TimeLineVertical.prototype.goNext = function () {
+        TimeLine.prototype.goNext.call(this);
+
+        /*this._$wrapper.animate({
+            top: '-200vh'
+        }, 500, (function () {
+            TimeLine.prototype.goNext.call(this);
+            this._$wrapper.css('top', '-100vh');
+        }).bind(this));*/
+    };
+
+    function TimeLineHorizontal(){
+        TimeLine.call(this);
+        this._$btn_next.addClass('horizontal');
+        this._$btn_prev.addClass('horizontal');
+        this._$wrapper.addClass('horizontal');
     }
 
-    TimeLineHoritzontal.prototype = time_line_intance;
+    TimeLineHorizontal.prototype = new TimeLine();
+
+
+    TimeLineHorizontal.prototype.goPrev = function () {
+        this._$wrapper.animate({
+            left: 0
+        }, 500, (function () {
+            TimeLine.prototype.goPrev.call(this);
+            this._$wrapper.css('left', '0vw');
+        }).bind(this));
+    };
+
+    TimeLineHorizontal.prototype.goNext = function () {
+        this._$wrapper.animate({
+            left: '-200vw'
+        }, 500, (function () {
+            TimeLine.prototype.goNext.call(this);
+            this._$wrapper.css('left', '0vw');
+        }).bind(this));
+    };
 
     //DATA SLOT MACHINE
     $().ready(function () {
 
-		x1 = new TimeLineVertical();
+		x1 = new TimeLineHorizontal();
 
-		x1.addEvent(new EventTimeLine(new TimeInterval(1951, 1979), 'PATATA'));
-        x1.addEvent(new EventTimeLine(new TimeInterval(1941, 1979), 'PESOL'));
-        x1.addEvent(new EventTimeLine(new TimeInterval(1911, 1979), 'PASTANAGA'));
-        x1.addEvent(new EventTimeLine(new TimeInterval(1921, 1979), 'MONGETA'));
+		x1.addEvent(new EventTimeLine(new TimeInterval(1951, 1979), 'Horizontal PATATA'));
+        x1.addEvent(new EventTimeLine(new TimeInterval(1941, 1979), 'Horizontal PESOL'));
+        x1.addEvent(new EventTimeLine(new TimeInterval(1911, 1979), 'Horizontal PASTANAGA'));
+        x1.addEvent(new EventTimeLine(new TimeInterval(1921, 1979), 'Horizontal MONGETA'));
         x1.setInterval(new TimeInterval(1931, 1979));
 
         x2 = new TimeLineVertical();
 
         $('body').append(x2.render());
-        x2.addEvent(new EventTimeLine(new TimeInterval(1951, 1979), 'PATATA'));
+        x2.addEvent(new EventTimeLine(new TimeInterval(1951, 1979), 'Vertical PATATA'));
         x2.addEvent(x1);
-        x2.addEvent(new EventTimeLine(new TimeInterval(1911, 1979), 'PASTANAGA'));
-        x2.addEvent(new EventTimeLine(new TimeInterval(1921, 1979), 'MONGETA'));
+        x2.addEvent(new EventTimeLine(new TimeInterval(1911, 1979), 'Vertical PASTANAGA'));
+        x2.addEvent(new EventTimeLine(new TimeInterval(1921, 1979), 'Vertical MONGETA'));
 
         //console.log(x1.constructor.name);
 
