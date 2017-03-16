@@ -14,7 +14,116 @@
 
 </body>
 <script>
-	//SLOT MACHINE
+	//GENERAL
+	function isVisibleInDom(){
+
+	};
+
+    //TIME Interval
+    function TimeInterval(init_interval, finish_interval){
+		this._init_interval = init_interval;
+		this._finish_interval = finish_interval;
+    };
+
+    TimeInterval.prototype.toString = function () {
+		return 'interval_' + this._init_interval + '_' + this._finish_interval;
+    };
+
+    TimeInterval.prototype.getInit = function () {
+		return this._init_interval;
+    };
+
+    TimeInterval.prototype.getFinish = function () {
+        return this._finish_interval;
+    };
+
+    //EVENT-TIMELINE
+    function EventTimeLine(interval, content){
+        this._interval = interval;
+    	this._$element = $('<div id="'+interval.toString()+'" class="event_time_line">'+content+'</div>');
+    };
+
+	EventTimeLine.prototype.getInterval = function () {
+		return this._interval;
+    };
+
+	EventTimeLine.prototype.getElement = function () {
+		return this._$element;
+    }
+
+    EventTimeLine.prototype.render = function () {
+	    return this._$element;
+	}
+
+	//TIMELINE
+    function TimeLine(){
+    	this._events = [];
+    	this._current = null;
+    	this._interval = null;
+        this._$wrapper = $("<div class='time_line_wrapper'></div>");
+        this._$wrapper.append($("<a class='btn btn_prev'>prev</a>").on('click', this.goPrev.bind(this)));
+        this._$wrapper.append($("<a class='btn btn_next'>next</a>").on('click', this.goNext.bind(this)));
+    };
+
+    TimeLine.prototype.render = function(){
+        return this._$wrapper;
+	};
+
+    TimeLine.prototype.setInterval = function(interval) {
+        this._interval = interval;
+	}
+
+	TimeLine.prototype.getInterval = function() {
+        return this._interval;
+	}
+
+    TimeLine.prototype.renderUpdate = function () {
+        this._$wrapper.children(':not(.btn)').detach();
+        this._$wrapper.append(this.prevEvent().render());
+        this._$wrapper.append(this._current.render());
+        this._$wrapper.append(this.nextEvent().render());
+    };
+
+    TimeLine.prototype.sortEvents = function () {
+        this._events.sort(function (a,b) {
+            if(a.getInterval().getInit() < b.getInterval().getInit()) return -1;
+            if(a.getInterval().getInit() > b.getInterval().getInit()) return 1;
+            return 0;
+        });
+    };
+
+    TimeLine.prototype.addEvent = function (event) {
+        //check if events exists
+        this._events.push(event);
+        if(this._current === null){
+            this._current = event;
+		}
+		this.sortEvents();
+        this.renderUpdate();
+        return this;
+	};
+
+	TimeLine.prototype.nextEvent = function () {
+	    let current_pos = this._events.indexOf(this._current);
+	    return this._events[(current_pos + 1) % this._events.length];
+    };
+
+	TimeLine.prototype.goNext = function () {
+		this._current = this.nextEvent();
+		this.renderUpdate();
+    };
+
+    TimeLine.prototype.prevEvent = function () {
+        let current_pos = this._events.indexOf(this._current);
+        return this._events[(current_pos + this._events.length - 1) % this._events.length];
+    };
+
+    TimeLine.prototype.goPrev = function () {
+        this._current = this.prevEvent();
+        this.renderUpdate();
+    };
+
+  	//SLOT MACHINE
     function SlotMachine(selector,config,curr_position = 0){
         this.selector = selector;
         this.config = config;
@@ -223,7 +332,22 @@
 
 
 
-        
+		x1 = new TimeLine();
+
+//		$('#time_line').append(x1.render());
+		x1.addEvent(new EventTimeLine(new TimeInterval(1951, 1979), 'PATATA'));
+        x1.addEvent(new EventTimeLine(new TimeInterval(1941, 1979), 'PESOL'));
+        x1.addEvent(new EventTimeLine(new TimeInterval(1911, 1979), 'PASTANAGA'));
+        x1.addEvent(new EventTimeLine(new TimeInterval(1921, 1979), 'MONGETA'));
+        x1.setInterval(new TimeInterval(1931, 1979));
+
+        x2 = new TimeLine();
+
+        $('#time_line').append(x2.render());
+        x2.addEvent(new EventTimeLine(new TimeInterval(1951, 1979), 'PATATA'));
+        x2.addEvent(x1);
+        x2.addEvent(new EventTimeLine(new TimeInterval(1911, 1979), 'PASTANAGA'));
+        x2.addEvent(new EventTimeLine(new TimeInterval(1921, 1979), 'MONGETA'));
 
     });
 </script>
