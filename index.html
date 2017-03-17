@@ -1,37 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Base Morillas - Landing</title>
-	<meta charset="UTF-8">
-	<style type="text/css">
+    <title>Base Morillas - Landing</title>
+    <meta charset="UTF-8">
+    <style type="text/css">
 
 
     </style>
-	<link rel="stylesheet" href="assets/css/reset.css" />
-	<link rel="stylesheet" href="assets/css/style.css" />
-    <script src="http://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="assets/css/reset.css"/>
+    <link rel="stylesheet" href="assets/css/style.css"/>
+    <script src="http://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
 </head>
 <body>
 
 </body>
 <script>
-	//GENERAL
-	function isVisibleInDom(){
+    //GENERAL
+    function isVisibleInDom() {
 
-	};
+    }
+    ;
 
     //TIME Interval
-    function TimeInterval(init_interval, finish_interval){
-		this._init_interval = init_interval;
-		this._finish_interval = finish_interval;
-    };
+    function TimeInterval(init_interval, finish_interval) {
+        this._init_interval = init_interval;
+        this._finish_interval = finish_interval ? finish_interval : '';
+    }
+    ;
 
     TimeInterval.prototype.toString = function () {
-		return 'interval_' + this._init_interval + '_' + this._finish_interval;
+        return 'interval_' + this._init_interval + '_' + this._finish_interval;
     };
 
     TimeInterval.prototype.getInit = function () {
-		return this._init_interval;
+        return this._init_interval;
     };
 
     TimeInterval.prototype.getFinish = function () {
@@ -39,56 +42,56 @@
     };
 
     //EVENT-TIMELINE
-    function EventTimeLine(interval, content){
+    function EventTimeLine(interval, content) {
         this._interval = interval;
-    	this._$element = $('<div id="'+interval.toString()+'" class="time_line_event">'+content+'</div>');
+        this._$element = $('<div id="' + interval.toString() + '" class="time_line_event">' + content + '</div>');
+    }
+    ;
+
+    EventTimeLine.prototype.getInterval = function () {
+        return this._interval;
     };
 
-	EventTimeLine.prototype.getInterval = function () {
-		return this._interval;
-    };
-
-	EventTimeLine.prototype.getElement = function () {
-		return this._$element;
+    EventTimeLine.prototype.getElement = function () {
+        return this._$element;
     }
 
     EventTimeLine.prototype.render = function () {
-	    return this._$element;
-	}
+        return this._$element;
+    }
 
-	//TIMELINE
-    function TimeLine(){
-    	this._events = [];
-    	this._current = null;
-    	this._interval = null;
+    //TIMELINE
+    function TimeLine() {
+        this._events = [];
+        this._current = null;
+        this._interval = null;
         this._$wrapper = $("<div class='time_line_wrapper'></div>");
         this._$wrapper.append(this._$btn_prev = $("<a class='btn btn_prev'>prev</a>").on('click', this.goPrev.bind(this)));
         this._$wrapper.append(this._$btn_next = $("<a class='btn btn_next'>next</a>").on('click', this.goNext.bind(this)));
+    }
+    ;
+
+    TimeLine.prototype.render = function () {
+        return this._$wrapper;
     };
 
-    TimeLine.prototype.render = function(){
-        return this._$wrapper;
-	};
-
-    TimeLine.prototype.setInterval = function(interval) {
+    TimeLine.prototype.setInterval = function (interval) {
         this._interval = interval;
-	}
+    }
 
-	TimeLine.prototype.getInterval = function() {
+    TimeLine.prototype.getInterval = function () {
         return this._interval;
-	}
+    }
 
     TimeLine.prototype.renderUpdate = function () {
-        this._$wrapper.children(':not(.btn)').detach();
-        this._$wrapper.append(this.prevEvent().render());
-        this._$wrapper.append(this._current.render());
-        this._$wrapper.append(this.nextEvent().render());
+        this._$wrapper.children(':not(.btn)').not(this._current.render()).detach();
+        if(this._$wrapper.children(':not(.btn)').length == 0) this._$wrapper.append(this._current.render());
     };
 
     TimeLine.prototype.sortEvents = function () {
-        this._events.sort(function (a,b) {
-            if(a.getInterval().getInit() < b.getInterval().getInit()) return -1;
-            if(a.getInterval().getInit() > b.getInterval().getInit()) return 1;
+        this._events.sort(function (a, b) {
+            if (a.getInterval().getInit() < b.getInterval().getInit()) return -1;
+            if (a.getInterval().getInit() > b.getInterval().getInit()) return 1;
             return 0;
         });
     };
@@ -96,22 +99,22 @@
     TimeLine.prototype.addEvent = function (event) {
         //check if events exists
         this._events.push(event);
-        if(this._current === null){
+        if (this._current === null) {
             this._current = event;
-		}
-		this.sortEvents();
+        }
+        this.sortEvents();
         this.renderUpdate();
         return this;
-	};
-
-	TimeLine.prototype.nextEvent = function () {
-	    let current_pos = this._events.indexOf(this._current);
-	    return this._events[(current_pos + 1) % this._events.length];
     };
 
-	TimeLine.prototype.goNext = function () {
-		this._current = this.nextEvent();
-		this.renderUpdate();
+    TimeLine.prototype.nextEvent = function () {
+        let current_pos = this._events.indexOf(this._current);
+        return this._events[(current_pos + 1) % this._events.length];
+    };
+
+    TimeLine.prototype.goNext = function () {
+        this._current = this.nextEvent();
+        this.renderUpdate();
     };
 
     TimeLine.prototype.prevEvent = function () {
@@ -124,86 +127,138 @@
         this.renderUpdate();
     };
 
-    function TimeLineVertical(){
+    TimeLine.prototype.disableBtn = function($btn) {
+        $btn.addClass('disabled');
+    }
+
+    TimeLine.prototype.enableBtn = function($btn) {
+        $btn.removeClass('disabled');
+    }
+
+    TimeLine.prototype.isBtnEnabled = function($btn) {
+        return !$btn.hasClass('disabled');
+    }
+
+    function TimeLineAnimated() {
         TimeLine.call(this);
+    }
+
+    TimeLineAnimated.prototype = new TimeLine();
+
+    TimeLineAnimated.prototype.render = function () {
+        this._$btn_next.removeClass('visible');
+        this._$btn_prev.removeClass('visible');
+        return TimeLine.prototype.render.call(this);
+    }
+
+    TimeLineAnimated.prototype.goNext = function () {
+        let go_next = TimeLine.prototype.goNext.call(this);
+        if(this._current._$btn_next) {
+            this._current._$btn_next.addClass('visible');
+          this._current._$btn_prev.addClass('visible');
+        }
+        return go_next;
+    }
+
+    TimeLineAnimated.prototype.goPrev = function () {
+        let go_prev = TimeLine.prototype.goPrev.call(this);
+        if(this._current._$btn_next) {
+            this._current._$btn_next.addClass('visible');
+            this._current._$btn_prev.addClass('visible');
+        }
+        return go_prev;
+    }
+
+    function TimeLineVertical() {
+        TimeLineAnimated.call(this);
         this._$btn_next.addClass('vertical');
         this._$btn_prev.addClass('vertical');
         this._$wrapper.addClass('vertical');
     }
 
-    TimeLineVertical.prototype = new TimeLine();
+    TimeLineVertical.prototype = new TimeLineAnimated();
 
     TimeLineVertical.prototype.goPrev = function () {
-        TimeLine.prototype.goPrev.call(this);
-/*
- 		this._$wrapper.animate({
-		    top: 0
-		}, 500, (function () {
-            TimeLine.prototype.goPrev.call(this);
+        if(this.isBtnEnabled(this._$btn_prev)) {
+            this.disableBtn(this._$btn_prev);
+            this._current.render().before(this.prevEvent().render());
             this._$wrapper.css('top', '-100vh');
-        }).bind(this));*/
+            this._$wrapper.animate({
+                top: 0
+            }, 500, (function () {
+                TimeLineAnimated.prototype.goPrev.call(this);
+                this.enableBtn(this._$btn_prev);
+            }).bind(this));
+        }
     };
 
     TimeLineVertical.prototype.goNext = function () {
-        TimeLine.prototype.goNext.call(this);
-
-        /*this._$wrapper.animate({
-            top: '-200vh'
-        }, 500, (function () {
-            TimeLine.prototype.goNext.call(this);
-            this._$wrapper.css('top', '-100vh');
-        }).bind(this));*/
+        if(this.isBtnEnabled(this._$btn_next)) {
+            this.disableBtn(this._$btn_next);
+            this._current.render().after(this.nextEvent().render());
+            this._$wrapper.animate({
+                top: '-100vh'
+            }, 500, (function () {
+                TimeLineAnimated.prototype.goNext.call(this);
+                this._$wrapper.css('top', '0');
+                this.enableBtn(this._$btn_next);
+            }).bind(this));
+        }
     };
 
-    function TimeLineHorizontal(){
-        TimeLine.call(this);
+    function TimeLineHorizontal() {
+        TimeLineAnimated.call(this);
         this._$btn_next.addClass('horizontal');
         this._$btn_prev.addClass('horizontal');
         this._$wrapper.addClass('horizontal');
     }
 
-    TimeLineHorizontal.prototype = new TimeLine();
-
+    TimeLineHorizontal.prototype = new TimeLineAnimated();
 
     TimeLineHorizontal.prototype.goPrev = function () {
-        this._$wrapper.animate({
-            left: 0
-        }, 500, (function () {
-            TimeLine.prototype.goPrev.call(this);
-            this._$wrapper.css('left', '0vw');
-        }).bind(this));
+        if(this.isBtnEnabled(this._$btn_prev)) {
+            this.disableBtn(this._$btn_prev);
+            this._current.render().before(this.prevEvent().render());
+            this._$wrapper.css('margin-left', '-100vw');
+            this._$wrapper.animate({
+                marginLeft: '0'
+            }, 500, (function () {
+                TimeLineAnimated.prototype.goPrev.call(this);
+                this.enableBtn(this._$btn_prev);
+            }).bind(this));
+        }
     };
 
     TimeLineHorizontal.prototype.goNext = function () {
-        this._$wrapper.animate({
-            left: '-200vw'
-        }, 500, (function () {
-            TimeLine.prototype.goNext.call(this);
-            this._$wrapper.css('left', '0vw');
-        }).bind(this));
+        if(this.isBtnEnabled(this._$btn_next)) {
+            this.disableBtn(this._$btn_next);
+            this._current.render().after(this.nextEvent().render());
+            this._$wrapper.animate({
+                left: '-100vw'
+            }, 500, (function () {
+                TimeLineAnimated.prototype.goNext.call(this);
+                this._$wrapper.css('left', '0vw');
+                this.enableBtn(this._$btn_next);
+            }).bind(this));
+        }
     };
 
     //DATA SLOT MACHINE
     $().ready(function () {
 
-		x1 = new TimeLineHorizontal();
-
-		x1.addEvent(new EventTimeLine(new TimeInterval(1951, 1979), 'Horizontal PATATA'));
-        x1.addEvent(new EventTimeLine(new TimeInterval(1941, 1979), 'Horizontal PESOL'));
-        x1.addEvent(new EventTimeLine(new TimeInterval(1911, 1979), 'Horizontal PASTANAGA'));
-        x1.addEvent(new EventTimeLine(new TimeInterval(1921, 1979), 'Horizontal MONGETA'));
-        x1.setInterval(new TimeInterval(1931, 1979));
+        x1 = new TimeLineHorizontal();
+        x1.addEvent(new EventTimeLine(new TimeInterval(1951, 1979), '<p>INTERVAL 1951 - 1979</p>'));
+        x1.addEvent(new EventTimeLine(new TimeInterval(1941, 1950), '<p>INTERVAL 1941 - 1950</p>'));
+        x1.addEvent(new EventTimeLine(new TimeInterval(1911, 1940), '<p>INTERVAL 1911 - 1940</p>'));
+        x1.addEvent(new EventTimeLine(new TimeInterval(1980, 2016), '<p>INTERVAL 1980 - 2016</p>'));
+        x1.setInterval(new TimeInterval(2), '1931 - horitzontal');
 
         x2 = new TimeLineVertical();
-
         $('body').append(x2.render());
-        x2.addEvent(new EventTimeLine(new TimeInterval(1951, 1979), 'Vertical PATATA'));
+        x2.addEvent(new EventTimeLine(new TimeInterval(1), '<h1 class="home inset-text pulse">WE ARE MORE</h1>'));
         x2.addEvent(x1);
-        x2.addEvent(new EventTimeLine(new TimeInterval(1911, 1979), 'Vertical PASTANAGA'));
-        x2.addEvent(new EventTimeLine(new TimeInterval(1921, 1979), 'Vertical MONGETA'));
-
-        //console.log(x1.constructor.name);
-
+        x2.addEvent(new EventTimeLine(new TimeInterval(3), '<h1>ABOUT</h1>'));
+        x2.addEvent(new EventTimeLine(new TimeInterval(4), '<h1>CONTACT</h1>'));
     });
 
 </script>

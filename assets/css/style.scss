@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+
 * {
   padding: 0;
   margin: 0;
@@ -8,80 +10,160 @@ html {
   width: 100%;
   background-color: burlywood;
   overflow: hidden;
+  font-family: 'Open Sans', sans-serif;
 }
 
 .time_line_wrapper {
+  top:0;
+  left:0;
   position: absolute;
   height: 100%;
   width: 100%;
-  .btn {
-    position: fixed;
+  .btn{
+    background-color: gray;
+    padding: 10px;
     display: inline-block;
-    z-index: 10000;
-    text-transform: uppercase;
-    &.horizontal{
-      position: absolute;
+    color: white;
+    width: 100px;
+    height: 20px;
+    text-align: center;
+    -webkit-transition:  200ms ease-in-out;
+    -moz-transition:  200ms ease-in-out;
+    -ms-transition:  200ms ease-in-out;
+    opacity: 0.8;
+    &:hover{
+      color: black;
+      opacity:1;
     }
   }
-  > div {
-    height: 100vh;
-    background-color: beige;
-  }
-  &.vertical {
-    top: -100vh;
-    .btn_prev.vertical {
-      top: 10px;
+  &.vertical{
+    &>.btn{
+      cursor: pointer;
+      position: fixed;
+      z-index: 1000;
+      margin-left: -60px;
       left: 50%;
-    }
-    .btn_next.vertical {
-      top: 95vh;
-      left: 50%;
+      &.btn_prev{
+        top: 10px;
+      }
+      &.btn_next{
+        bottom: 10px;
+      }
     }
   }
-  &.horizontal {
-    left: 0;
-    top: 0;
-    .btn_prev.horizontal {
-      top: 0;
-      bottom: 0;
-      //left: 105vw;
-      height: 30px;
-      margin: auto;
-      max-width: 100px;
+
+  &.horizontal{
+    width: 200vw;
+    display: flex;
+    flex-direction: row;
+    align-items:center;
+    &>.btn{
+      cursor: pointer;
+      display: block;
+      opacity:0;
+      position: fixed;
+      -webkit-transition:  all ease-in-out 200ms;
+      -moz-transition:  all ease-in-out 200ms;
+      -ms-transition:  all ease-in-out 200ms;
+      transition: all ease-in-out 200ms;
+      &.btn_prev{
+        z-index: 999;
+        left: 10px;
+      }
+      &.btn_next{
+        z-index:999;
+        right: 10px;
+      }
+      &:not(.visible){
+        opacity:0;
+      }
+      &.visible{
+        opacity:1;
+        -webkit-transition:  all ease-in-out 200ms;
+        -moz-transition:  all ease-in-out 200ms;
+        -ms-transition:  all ease-in-out 200ms;
+        transition: all ease-in-out 200ms;
+      }
+      &:hover{
+        opacity:1;
+      }
     }
-    .btn_next.horizontal {
-      top: 0;
-      bottom: 0;
-      //right: -105vw;
-      margin: auto;
-      height: 30px;
-      max-width: 100px;
+
+    &>div{
+      display: inline-block;
+      position: relative;
+      width: 100vw;
     }
+
+    .time_line_event{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+  }
+
+  &>div{
+    position: relative;
+    height:100vh;
+    width: 100%;
   }
 }
 
-/*
+.time_line_event{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+#interval_1_{
+  background: #b5ffb7;
+}
+
+h1{
+  font-family: Helvetica, Arial, sans-serif;
+  font-weight: bold;
+  font-size: 4em;
+  line-height: 1em;
+}
+
+/*HELPERS STYLE CLASS*/
+
 @keyframes pulse_animation {
   0% { transform: scale(1); }
   30% { transform: scale(1); }
-  40% { transform: scale(1.10); }
+  40% { transform: scale(1.08); }
   50% { transform: scale(1); }
   60% { transform: scale(1); }
-  70% { transform: scale(1.04); }
+  70% { transform: scale(1.05); }
   80% { transform: scale(1); }
   100% { transform: scale(1); }
-}
-
-#home{
-  font-family: Arial;
-  font-size: 2em;
 }
 
 .pulse {
   animation-name: pulse_animation;
   animation-duration: 3500ms;
-  transform-origin:50% 50%;
+  transform-origin:70% 70%;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
 }
-*/
+
+.time_line_event{
+  p{
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 2em;
+    line-height: 1em;
+  }
+}
+
+.inset-text {
+  /* Shadows are visible under slightly transparent text color */
+  color: rgba(0, 156, 48, 0.8);
+  text-shadow: 1px 4px 6px #b5ffb7, 0 0 0 #000, 1px 4px 6px #def;
+}
+/* Don't show shadows when selecting text */
+::-moz-selection { background: #009c30; color: #fff; text-shadow: none; }
+::selection { background: #49ff7c; color: #fff; text-shadow: none; }
+
