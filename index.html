@@ -17,17 +17,11 @@
 </body>
 <script>
     //GENERAL
-    function isVisibleInDom() {
-
-    }
-    ;
-
     //TIME Interval
     function TimeInterval(init_interval, finish_interval) {
         this._init_interval = init_interval;
         this._finish_interval = finish_interval ? finish_interval : '';
-    }
-    ;
+    };
 
     TimeInterval.prototype.toString = function () {
         return 'interval_' + this._init_interval + '_' + this._finish_interval;
@@ -45,8 +39,7 @@
     function EventTimeLine(interval, content) {
         this._interval = interval;
         this._$element = $('<div id="' + interval.toString() + '" class="time_line_event">' + content + '</div>');
-    }
-    ;
+    };
 
     EventTimeLine.prototype.getInterval = function () {
         return this._interval;
@@ -54,11 +47,11 @@
 
     EventTimeLine.prototype.getElement = function () {
         return this._$element;
-    }
+    };
 
     EventTimeLine.prototype.render = function () {
         return this._$element;
-    }
+    };
 
     //TIMELINE
     function TimeLine() {
@@ -68,8 +61,7 @@
         this._$wrapper = $("<div class='time_line_wrapper'></div>");
         this._$wrapper.append(this._$btn_prev = $("<a class='btn btn_prev'>prev</a>").on('click', this.goPrev.bind(this)));
         this._$wrapper.append(this._$btn_next = $("<a class='btn btn_next'>next</a>").on('click', this.goNext.bind(this)));
-    }
-    ;
+    };
 
     TimeLine.prototype.render = function () {
         return this._$wrapper;
@@ -77,11 +69,11 @@
 
     TimeLine.prototype.setInterval = function (interval) {
         this._interval = interval;
-    }
+    };
 
     TimeLine.prototype.getInterval = function () {
         return this._interval;
-    }
+    };
 
     TimeLine.prototype.renderUpdate = function () {
         this._$wrapper.children(':not(.btn)').not(this._current.render()).detach();
@@ -261,5 +253,6 @@
         x2.addEvent(new EventTimeLine(new TimeInterval(4), '<h1>CONTACT</h1>'));
     });
 
+    console.log(x1._events.length);
 </script>
 </html>
